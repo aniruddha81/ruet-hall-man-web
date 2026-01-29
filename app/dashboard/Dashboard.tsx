@@ -1,6 +1,22 @@
 "use client";
 
 import Navbar from "@/components/navbar";
+import {
+  AlertTriangle,
+  BarChart3,
+  Calendar,
+  CheckCircle,
+  ChevronRight,
+  Clock,
+  CreditCard,
+  DollarSign,
+  FileText,
+  Home,
+  Megaphone,
+  Plane,
+  Users,
+  Wrench,
+} from "lucide-react";
 import { useState } from "react";
 
 export default function StudentDashboard() {
@@ -234,11 +250,7 @@ export default function StudentDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Navbar Component */}
-      <Navbar
-        userType="student"
-        userName={studentData.name}
-        userInitials="MA"
-      />
+      <Navbar userName={studentData.name} userInitials="MA" />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -258,17 +270,7 @@ export default function StudentDashboard() {
           <div className="mb-6 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded">
             <div className="flex">
               <div className="shrink-0">
-                <svg
-                  className="h-5 w-5 text-red-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <AlertTriangle className="h-5 w-5 text-red-500" />
               </div>
               <div className="ml-3">
                 <p className="text-sm font-medium text-red-800 dark:text-red-300">
@@ -297,19 +299,7 @@ export default function StudentDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <DollarSign className="w-6 h-6 text-red-600" />
               </div>
             </div>
           </div>
@@ -326,19 +316,7 @@ export default function StudentDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <Clock className="w-6 h-6 text-red-600" />
               </div>
             </div>
           </div>
@@ -355,19 +333,7 @@ export default function StudentDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <CreditCard className="w-6 h-6 text-blue-600" />
               </div>
             </div>
           </div>
@@ -387,19 +353,7 @@ export default function StudentDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 4h4"
-                  />
-                </svg>
+                <Home className="w-6 h-6 text-green-600" />
               </div>
             </div>
           </div>
@@ -496,14 +450,46 @@ export default function StudentDashboard() {
         <div className="mt-8 border-b border-gray-200 dark:border-gray-700 overflow-x-auto bg-white dark:bg-gray-800">
           <div className="flex space-x-8">
             {[
-              { id: "overview", label: "Overview", icon: "📊" },
-              { id: "notices", label: "Notices", icon: "📢" },
-              { id: "maintenance", label: "Maintenance", icon: "🔧" },
-              { id: "complaints", label: "Complaints", icon: "⚠️" },
-              { id: "events", label: "Events", icon: "📅" },
-              { id: "leave", label: "Leave", icon: "✈️" },
-              { id: "roommate", label: "Roommates", icon: "👥" },
-              { id: "documents", label: "Documents", icon: "📄" },
+              {
+                id: "overview",
+                label: "Overview",
+                icon: <BarChart3 className="w-4 h-4" />,
+              },
+              {
+                id: "notices",
+                label: "Notices",
+                icon: <Megaphone className="w-4 h-4" />,
+              },
+              {
+                id: "maintenance",
+                label: "Maintenance",
+                icon: <Wrench className="w-4 h-4" />,
+              },
+              {
+                id: "complaints",
+                label: "Complaints",
+                icon: <AlertTriangle className="w-4 h-4" />,
+              },
+              {
+                id: "events",
+                label: "Events",
+                icon: <Calendar className="w-4 h-4" />,
+              },
+              {
+                id: "leave",
+                label: "Leave",
+                icon: <Plane className="w-4 h-4" />,
+              },
+              {
+                id: "roommate",
+                label: "Roommates",
+                icon: <Users className="w-4 h-4" />,
+              },
+              {
+                id: "documents",
+                label: "Documents",
+                icon: <FileText className="w-4 h-4" />,
+              },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -574,81 +560,31 @@ export default function StudentDashboard() {
                   </h4>
                   <div className="space-y-2">
                     <div className="flex items-center">
-                      <svg
-                        className="w-5 h-5 text-green-600 mr-3"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
                       <span className="text-gray-700 dark:text-gray-300">
                         Wi-Fi Access
                       </span>
                     </div>
                     <div className="flex items-center">
-                      <svg
-                        className="w-5 h-5 text-green-600 mr-3"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
                       <span className="text-gray-700 dark:text-gray-300">
                         24/7 Electricity
                       </span>
                     </div>
                     <div className="flex items-center">
-                      <svg
-                        className="w-5 h-5 text-green-600 mr-3"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
                       <span className="text-gray-700 dark:text-gray-300">
                         Hot Water Supply
                       </span>
                     </div>
                     <div className="flex items-center">
-                      <svg
-                        className="w-5 h-5 text-green-600 mr-3"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
                       <span className="text-gray-700 dark:text-gray-300">
                         Dining Hall
                       </span>
                     </div>
                     <div className="flex items-center">
-                      <svg
-                        className="w-5 h-5 text-green-600 mr-3"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
                       <span className="text-gray-700 dark:text-gray-300">
                         Study Room
                       </span>
@@ -667,19 +603,7 @@ export default function StudentDashboard() {
                         Pay your due amount online securely
                       </p>
                     </div>
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                    <ChevronRight className="w-6 h-6" />
                   </div>
                 </button>
 
@@ -691,19 +615,7 @@ export default function StudentDashboard() {
                         Apply for guest entry pass
                       </p>
                     </div>
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                    <ChevronRight className="w-6 h-6" />
                   </div>
                 </button>
 
@@ -715,19 +627,7 @@ export default function StudentDashboard() {
                         Submit maintenance request
                       </p>
                     </div>
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                    <ChevronRight className="w-6 h-6" />
                   </div>
                 </button>
 
@@ -739,19 +639,7 @@ export default function StudentDashboard() {
                         Request leave from hall
                       </p>
                     </div>
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                    <ChevronRight className="w-6 h-6" />
                   </div>
                 </button>
               </div>
@@ -1010,13 +898,7 @@ export default function StudentDashboard() {
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                        <svg
-                          className="w-6 h-6 text-red-600"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M8.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753 1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H8.5z" />
-                        </svg>
+                        <FileText className="w-6 h-6 text-red-600" />
                       </div>
                       <div>
                         <h4 className="font-bold text-gray-900 dark:text-white">

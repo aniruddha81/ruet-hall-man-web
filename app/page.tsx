@@ -1,11 +1,19 @@
 import Navbar from "@/components/navbar";
+import {
+  Building2,
+  Calendar,
+  DollarSign,
+  MessageSquareWarning,
+  Users,
+  Wrench,
+} from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-green-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900">
       {/* Navbar Component */}
-      <Navbar userType="student" userName="Guest User" userInitials="GU" />
+      <Navbar userName="Guest User" userInitials="GU" />
 
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -44,19 +52,7 @@ export default function Home() {
           {/* Feature 1 */}
           <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-200 dark:border-gray-700">
             <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
-              <svg
-                className="w-8 h-8 text-blue-600 dark:text-blue-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
+              <Users className="w-8 h-8 text-blue-600 dark:text-blue-400" />
             </div>
             <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
               Student Management
@@ -70,19 +66,7 @@ export default function Home() {
           {/* Feature 2 */}
           <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-200 dark:border-gray-700">
             <div className="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
-              <svg
-                className="w-8 h-8 text-green-600 dark:text-green-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                />
-              </svg>
+              <Building2 className="w-8 h-8 text-green-600 dark:text-green-400" />
             </div>
             <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
               Hall Administration
@@ -96,19 +80,7 @@ export default function Home() {
           {/* Feature 3 */}
           <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-200 dark:border-gray-700">
             <div className="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
-              <svg
-                className="w-8 h-8 text-purple-600 dark:text-purple-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <DollarSign className="w-8 h-8 text-purple-600 dark:text-purple-400" />
             </div>
             <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
               Payment Tracking
@@ -122,19 +94,7 @@ export default function Home() {
           {/* Feature 4 */}
           <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-200 dark:border-gray-700">
             <div className="w-14 h-14 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center mb-4">
-              <svg
-                className="w-8 h-8 text-yellow-600 dark:text-yellow-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <Wrench className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />
             </div>
             <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
               Maintenance Requests
@@ -148,19 +108,7 @@ export default function Home() {
           {/* Feature 5 */}
           <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-200 dark:border-gray-700">
             <div className="w-14 h-14 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center mb-4">
-              <svg
-                className="w-8 h-8 text-red-600 dark:text-red-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4v2m0 4v2M7.5 7.5h9M7.5 7.5l-2.25 2.25m11.5-2.25l2.25 2.25"
-                />
-              </svg>
+              <MessageSquareWarning className="w-8 h-8 text-red-600 dark:text-red-400" />
             </div>
             <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
               Complaint Management
@@ -174,19 +122,7 @@ export default function Home() {
           {/* Feature 6 */}
           <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-200 dark:border-gray-700">
             <div className="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center mb-4">
-              <svg
-                className="w-8 h-8 text-indigo-600 dark:text-indigo-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
+              <Calendar className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
             </div>
             <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
               Event Management
@@ -231,40 +167,134 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <h5 className="font-bold text-white dark:text-gray-200 mb-4">About</h5>
+              <h5 className="font-bold text-white dark:text-gray-200 mb-4">
+                About
+              </h5>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">About RUET</a></li>
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">Contact Info</a></li>
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">Facilities</a></li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    About RUET
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    Contact Info
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    Facilities
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
-              <h5 className="font-bold text-white dark:text-gray-200 mb-4">Support</h5>
+              <h5 className="font-bold text-white dark:text-gray-200 mb-4">
+                Support
+              </h5>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">Help Center</a></li>
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">Documentation</a></li>
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">Report Issue</a></li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    Report Issue
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
-              <h5 className="font-bold text-white dark:text-gray-200 mb-4">Legal</h5>
+              <h5 className="font-bold text-white dark:text-gray-200 mb-4">
+                Legal
+              </h5>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">Terms & Conditions</a></li>
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">Disclaimer</a></li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    Terms & Conditions
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    Disclaimer
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
-              <h5 className="font-bold text-white dark:text-gray-200 mb-4">Connect</h5>
+              <h5 className="font-bold text-white dark:text-gray-200 mb-4">
+                Connect
+              </h5>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">Facebook</a></li>
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">Twitter</a></li>
-                <li><a href="#" className="hover:text-white dark:hover:text-gray-300 transition">Instagram</a></li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    Facebook
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    Twitter
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-white dark:hover:text-gray-300 transition"
+                  >
+                    Instagram
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-800 dark:border-gray-700 pt-8 text-center">
-            <p className="text-sm">&copy; 2024 RUET Hall Management System. All rights reserved.</p>
+            <p className="text-sm">
+              &copy; 2024 RUET Hall Management System. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
