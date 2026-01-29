@@ -1,4 +1,3 @@
-import BottomBar from "@/components/bottombar";
 import { LayoutProvider } from "@/contexts/LayoutContext";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
@@ -33,7 +32,6 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <LayoutProvider>
             {children}
-            <BottomBar />
           </LayoutProvider>
         </ThemeProvider>
       </body>

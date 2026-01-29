@@ -12,7 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Chrome, Github } from "lucide-react";
+import { FaChrome } from "react-icons/fa";
+import { VscGithub } from "react-icons/vsc";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -175,11 +176,11 @@ export default function SignupPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <Button variant="outline" type="button" className="h-11">
-                <Chrome className="mr-2 h-4 w-4" />
+                <FaChrome className="mr-2 h-4 w-4" />
                 Google
               </Button>
               <Button variant="outline" type="button" className="h-11">
-                <Github className="mr-2 h-4 w-4" />
+                <VscGithub className="mr-2 h-4 w-4" />
                 GitHub
               </Button>
             </div>
