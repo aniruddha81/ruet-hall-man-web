@@ -1,6 +1,18 @@
 "use client";
 
-import Navbar from "@/components/navbar";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AlertTriangle,
   BarChart3,
@@ -20,8 +32,6 @@ import {
 import { useState } from "react";
 
 export default function StudentDashboard() {
-  const [activeTab, setActiveTab] = useState("overview");
-
   const [studentData] = useState({
     name: "Mohammad Ahmed",
     studentId: "20210001",
@@ -76,29 +86,33 @@ export default function StudentDashboard() {
     .filter((p) => p.status === "overdue")
     .reduce((sum, p) => sum + p.amount, 0);
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (
+    status: string,
+  ): "default" | "secondary" | "destructive" | "outline" => {
     switch (status) {
       case "paid":
-        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300";
+        return "default";
       case "pending":
-        return "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300";
+        return "secondary";
       case "overdue":
-        return "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300";
+        return "destructive";
       default:
-        return "bg-gray-100 dark:bg-gray-900 text-gray-800";
+        return "outline";
     }
   };
 
-  const getStatusBadgeColor = (status: string) => {
-    switch (status) {
-      case "paid":
-        return "bg-green-500";
-      case "pending":
-        return "bg-yellow-500";
-      case "overdue":
-        return "bg-red-50 dark:bg-red-900/200";
+  const getPriorityVariant = (
+    priority: string,
+  ): "default" | "secondary" | "destructive" | "outline" => {
+    switch (priority) {
+      case "high":
+        return "destructive";
+      case "medium":
+        return "secondary";
+      case "low":
+        return "default";
       default:
-        return "bg-gray-500";
+        return "outline";
     }
   };
 
@@ -237,29 +251,26 @@ export default function StudentDashboard() {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high":
-        return "text-red-600 dark:text-red-300 bg-red-50 dark:bg-red-900/20 dark:bg-red-900/20";
+        return "text-destructive bg-destructive/10";
       case "medium":
-        return "text-yellow-600 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-900/20";
+        return "text-chart-4 bg-chart-4/10";
       case "low":
-        return "text-green-600 dark:text-green-300 bg-green-50 dark:bg-green-900/20";
+        return "text-chart-2 bg-chart-2/10";
       default:
-        return "text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-900/20 dark:bg-gray-900/20";
+        return "text-muted-foreground bg-muted";
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* Navbar Component */}
-      <Navbar userName={studentData.name} userInitials="MA" />
-
+    <>
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-3xl font-bold text-foreground">
             Welcome, {studentData.name}
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">
+          <p className="text-muted-foreground mt-2">
             Student ID: {studentData.studentId} | {studentData.hall} | Room{" "}
             {studentData.room}
           </p>
@@ -267,516 +278,420 @@ export default function StudentDashboard() {
 
         {/* Alert for Overdue Payment */}
         {overdueAmount > 0 && (
-          <div className="mb-6 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded">
-            <div className="flex">
-              <div className="shrink-0">
-                <AlertTriangle className="h-5 w-5 text-red-500" />
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-red-800 dark:text-red-300">
-                  ⚠️ You have an overdue payment of{" "}
-                  <span className="font-bold">
-                    BDT {overdueAmount.toLocaleString()}
-                  </span>
-                  . Please pay as soon as possible to avoid penalties.
-                </p>
-              </div>
-            </div>
-          </div>
+          <Alert variant="destructive" className="mb-6">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              You have an overdue payment of{" "}
+              <span className="font-bold">
+                BDT {overdueAmount.toLocaleString()}
+              </span>
+              . Please pay as soon as possible to avoid penalties.
+            </AlertDescription>
+          </Alert>
         )}
 
         {/* Key Metrics */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
-          {/* Total Due */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  Total Due
-                </p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
-                  BDT {totalDue.toLocaleString()}
-                </p>
+          <Card className="hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-muted-foreground text-sm">Total Due</p>
+                  <p className="text-3xl font-bold text-foreground mt-2">
+                    BDT {totalDue.toLocaleString()}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-destructive/10 rounded-xl flex items-center justify-center">
+                  <DollarSign className="w-6 h-6 text-destructive" />
+                </div>
               </div>
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-red-600" />
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          {/* Overdue */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  Overdue
-                </p>
-                <p className="text-3xl font-bold text-red-600 mt-2">
-                  BDT {overdueAmount.toLocaleString()}
-                </p>
+          <Card className="hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-muted-foreground text-sm">Overdue</p>
+                  <p className="text-3xl font-bold text-destructive mt-2">
+                    BDT {overdueAmount.toLocaleString()}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-destructive/10 rounded-xl flex items-center justify-center">
+                  <Clock className="w-6 h-6 text-destructive" />
+                </div>
               </div>
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                <Clock className="w-6 h-6 text-red-600" />
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          {/* Monthly Fee */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  Monthly Fee
-                </p>
-                <p className="text-3xl font-bold text-blue-600 mt-2">
-                  BDT 5,000
-                </p>
+          <Card className="hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-muted-foreground text-sm">Monthly Fee</p>
+                  <p className="text-3xl font-bold text-primary mt-2">
+                    BDT 5,000
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <CreditCard className="w-6 h-6 text-primary" />
+                </div>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <CreditCard className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          {/* Hall Info */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  Current Status
-                </p>
-                <p className="text-lg font-bold text-gray-900 dark:text-white mt-2">
-                  {studentData.hall}
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                  Room {studentData.room}
-                </p>
+          <Card className="hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-muted-foreground text-sm">
+                    Current Status
+                  </p>
+                  <p className="text-lg font-bold text-foreground mt-2">
+                    {studentData.hall}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Room {studentData.room}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-chart-2/10 rounded-xl flex items-center justify-center">
+                  <Home className="w-6 h-6 text-chart-2" />
+                </div>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <Home className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Payment History Table */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-              Payment History
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+        <Card>
+          <CardHeader>
+            <CardTitle>Payment History</CardTitle>
+            <p className="text-sm text-muted-foreground">
               Track all your monthly payments and due amounts
             </p>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Month
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Amount
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Due Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Paid Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Month</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Due Date</TableHead>
+                  <TableHead>Paid Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {paymentHistory.map((payment) => (
-                  <tr
-                    key={payment.id}
-                    className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-                  >
-                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-medium">
+                  <TableRow key={payment.id}>
+                    <TableCell className="font-medium">
                       {payment.month}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-semibold">
+                    </TableCell>
+                    <TableCell className="font-semibold">
                       BDT {payment.amount.toLocaleString()}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
                       {new Date(payment.dueDate).toLocaleDateString("en-GB")}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
                       {payment.paidDate
                         ? new Date(payment.paidDate).toLocaleDateString("en-GB")
                         : "-"}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusColor(
-                          payment.status,
-                        )}`}
-                      >
-                        <span
-                          className={`w-2 h-2 rounded-full mr-2 ${getStatusBadgeColor(
-                            payment.status,
-                          )}`}
-                        ></span>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={getStatusVariant(payment.status)}>
                         {payment.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
                       {payment.status !== "paid" ? (
-                        <button className="text-blue-600 hover:text-blue-700 text-sm font-semibold hover:underline">
+                        <Button
+                          variant="link"
+                          className="p-0 h-auto text-primary"
+                        >
                           Pay Now
-                        </button>
+                        </Button>
                       ) : (
-                        <button className="text-gray-400 text-sm font-semibold cursor-not-allowed">
+                        <Button
+                          variant="link"
+                          className="p-0 h-auto text-muted-foreground"
+                          disabled
+                        >
                           View Receipt
-                        </button>
+                        </Button>
                       )}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
         {/* Tabs Navigation */}
-        <div className="mt-8 border-b border-gray-200 dark:border-gray-700 overflow-x-auto bg-white dark:bg-gray-800">
-          <div className="flex space-x-8">
-            {[
-              {
-                id: "overview",
-                label: "Overview",
-                icon: <BarChart3 className="w-4 h-4" />,
-              },
-              {
-                id: "notices",
-                label: "Notices",
-                icon: <Megaphone className="w-4 h-4" />,
-              },
-              {
-                id: "maintenance",
-                label: "Maintenance",
-                icon: <Wrench className="w-4 h-4" />,
-              },
-              {
-                id: "complaints",
-                label: "Complaints",
-                icon: <AlertTriangle className="w-4 h-4" />,
-              },
-              {
-                id: "events",
-                label: "Events",
-                icon: <Calendar className="w-4 h-4" />,
-              },
-              {
-                id: "leave",
-                label: "Leave",
-                icon: <Plane className="w-4 h-4" />,
-              },
-              {
-                id: "roommate",
-                label: "Roommates",
-                icon: <Users className="w-4 h-4" />,
-              },
-              {
-                id: "documents",
-                label: "Documents",
-                icon: <FileText className="w-4 h-4" />,
-              },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-3 font-medium whitespace-nowrap border-b-2 transition ${
-                  activeTab === tab.id
-                    ? "border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-500"
-                    : "border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                }`}
-              >
-                <span className="mr-2">{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <Tabs defaultValue="overview" className="mt-8">
+          <Card className="mb-6">
+            <CardContent className="p-2">
+              <TabsList className="w-full justify-start overflow-x-auto flex-wrap h-auto gap-1 bg-transparent">
+                <TabsTrigger value="overview" className="gap-2">
+                  <BarChart3 className="w-4 h-4" />
+                  Overview
+                </TabsTrigger>
+                <TabsTrigger value="notices" className="gap-2">
+                  <Megaphone className="w-4 h-4" />
+                  Notices
+                </TabsTrigger>
+                <TabsTrigger value="maintenance" className="gap-2">
+                  <Wrench className="w-4 h-4" />
+                  Maintenance
+                </TabsTrigger>
+                <TabsTrigger value="complaints" className="gap-2">
+                  <AlertTriangle className="w-4 h-4" />
+                  Complaints
+                </TabsTrigger>
+                <TabsTrigger value="events" className="gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Events
+                </TabsTrigger>
+                <TabsTrigger value="leave" className="gap-2">
+                  <Plane className="w-4 h-4" />
+                  Leave
+                </TabsTrigger>
+                <TabsTrigger value="roommate" className="gap-2">
+                  <Users className="w-4 h-4" />
+                  Roommates
+                </TabsTrigger>
+                <TabsTrigger value="documents" className="gap-2">
+                  <FileText className="w-4 h-4" />
+                  Documents
+                </TabsTrigger>
+              </TabsList>
+            </CardContent>
+          </Card>
 
-        {/* Tab Content */}
-        <div className="mt-8">
           {/* Overview Tab */}
-          {activeTab === "overview" && (
-            <div className="space-y-6">
-              {/* Quick Stats */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                  <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                    Room Details
-                  </h4>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-300">
-                        Room Number
-                      </span>
-                      <span className="font-semibold">{studentData.room}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-300">
-                        Floor
-                      </span>
-                      <span className="font-semibold">
-                        Floor {studentData.floor}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-300">
-                        Occupancy Date
-                      </span>
-                      <span className="font-semibold">
-                        {new Date(studentData.occupancyDate).toLocaleDateString(
-                          "en-GB",
-                        )}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-300">
-                        Roommates
-                      </span>
-                      <span className="font-semibold">
-                        {studentData.roommatesCount}
-                      </span>
-                    </div>
+          <TabsContent value="overview" className="space-y-6">
+            {/* Quick Stats */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Room Details</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Room Number</span>
+                    <span className="font-semibold">{studentData.room}</span>
                   </div>
-                </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Floor</span>
+                    <span className="font-semibold">
+                      Floor {studentData.floor}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">
+                      Occupancy Date
+                    </span>
+                    <span className="font-semibold">
+                      {new Date(studentData.occupancyDate).toLocaleDateString(
+                        "en-GB",
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Roommates</span>
+                    <span className="font-semibold">
+                      {studentData.roommatesCount}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
 
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                  <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                    Hall Facilities
-                  </h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                      <span className="text-gray-700 dark:text-gray-300">
-                        Wi-Fi Access
-                      </span>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Hall Facilities</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {[
+                    "Wi-Fi Access",
+                    "24/7 Electricity",
+                    "Hot Water Supply",
+                    "Dining Hall",
+                    "Study Room",
+                  ].map((facility, index) => (
+                    <div key={index} className="flex items-center">
+                      <CheckCircle className="w-5 h-5 text-chart-2 mr-3" />
+                      <span className="text-muted-foreground">{facility}</span>
                     </div>
-                    <div className="flex items-center">
-                      <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                      <span className="text-gray-700 dark:text-gray-300">
-                        24/7 Electricity
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                      <span className="text-gray-700 dark:text-gray-300">
-                        Hot Water Supply
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                      <span className="text-gray-700 dark:text-gray-300">
-                        Dining Hall
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                      <span className="text-gray-700 dark:text-gray-300">
-                        Study Room
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <button className="bg-blue-600 text-white p-6 rounded-xl hover:bg-blue-700 transition shadow-sm text-left">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-lg font-bold">Pay Hall Fee</h4>
-                      <p className="text-blue-100 text-sm mt-1">
-                        Pay your due amount online securely
-                      </p>
-                    </div>
-                    <ChevronRight className="w-6 h-6" />
-                  </div>
-                </button>
-
-                <button className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white p-6 rounded-xl hover:border-gray-300 transition shadow-sm text-left">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-lg font-bold">Request Guest Pass</h4>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
-                        Apply for guest entry pass
-                      </p>
-                    </div>
-                    <ChevronRight className="w-6 h-6" />
-                  </div>
-                </button>
-
-                <button className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white p-6 rounded-xl hover:border-gray-300 transition shadow-sm text-left">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-lg font-bold">Report Issue</h4>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
-                        Submit maintenance request
-                      </p>
-                    </div>
-                    <ChevronRight className="w-6 h-6" />
-                  </div>
-                </button>
-
-                <button className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white p-6 rounded-xl hover:border-gray-300 transition shadow-sm text-left">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-lg font-bold">Apply for Leave</h4>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
-                        Request leave from hall
-                      </p>
-                    </div>
-                    <ChevronRight className="w-6 h-6" />
-                  </div>
-                </button>
-              </div>
+                  ))}
+                </CardContent>
+              </Card>
             </div>
-          )}
+
+            {/* Quick Actions */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <Button className="h-auto p-6 justify-between" size="lg">
+                <div className="text-left">
+                  <h4 className="text-lg font-bold">Pay Hall Fee</h4>
+                  <p className="text-primary-foreground/80 text-sm mt-1">
+                    Pay your due amount online securely
+                  </p>
+                </div>
+                <ChevronRight className="w-6 h-6" />
+              </Button>
+
+              <Button
+                variant="outline"
+                className="h-auto p-6 justify-between"
+                size="lg"
+              >
+                <div className="text-left">
+                  <h4 className="text-lg font-bold">Request Guest Pass</h4>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    Apply for guest entry pass
+                  </p>
+                </div>
+                <ChevronRight className="w-6 h-6" />
+              </Button>
+
+              <Button
+                variant="outline"
+                className="h-auto p-6 justify-between"
+                size="lg"
+              >
+                <div className="text-left">
+                  <h4 className="text-lg font-bold">Report Issue</h4>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    Submit maintenance request
+                  </p>
+                </div>
+                <ChevronRight className="w-6 h-6" />
+              </Button>
+
+              <Button
+                variant="outline"
+                className="h-auto p-6 justify-between"
+                size="lg"
+              >
+                <div className="text-left">
+                  <h4 className="text-lg font-bold">Apply for Leave</h4>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    Request leave from hall
+                  </p>
+                </div>
+                <ChevronRight className="w-6 h-6" />
+              </Button>
+            </div>
+          </TabsContent>
 
           {/* Notices Tab */}
-          {activeTab === "notices" && (
-            <div className="space-y-4">
-              {notices.map((notice) => (
-                <div
-                  key={notice.id}
-                  className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition border-l-4 border border-gray-200 dark:border-gray-700"
-                >
+          <TabsContent value="notices" className="space-y-4">
+            {notices.map((notice) => (
+              <Card key={notice.id} className="border-l-4 border-l-primary">
+                <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h4 className="text-lg font-bold text-gray-900 dark:text-white">
+                        <h4 className="text-lg font-bold text-foreground">
                           {notice.title}
                         </h4>
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getPriorityColor(
-                            notice.priority,
-                          )}`}
-                        >
+                        <Badge variant={getPriorityVariant(notice.priority)}>
                           {notice.priority}
-                        </span>
+                        </Badge>
                       </div>
-                      <p className="text-gray-600 dark:text-gray-300 mb-2">
+                      <p className="text-muted-foreground mb-2">
                         {notice.description}
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground">
                         {new Date(notice.date).toLocaleDateString("en-GB")}
                       </p>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                </CardContent>
+              </Card>
+            ))}
+          </TabsContent>
 
           {/* Maintenance Tab */}
-          {activeTab === "maintenance" && (
-            <div>
-              <button className="mb-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
-                + New Maintenance Request
-              </button>
-              <div className="space-y-4">
-                {maintenanceRequests.map((request) => (
-                  <div
-                    key={request.id}
-                    className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition border border-gray-200 dark:border-gray-700"
-                  >
+          <TabsContent value="maintenance">
+            <Button className="mb-6">+ New Maintenance Request</Button>
+            <div className="space-y-4">
+              {maintenanceRequests.map((request) => (
+                <Card key={request.id}>
+                  <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-3">
-                      <h4 className="text-lg font-bold text-gray-900 dark:text-white">
+                      <h4 className="text-lg font-bold text-foreground">
                         {request.title}
                       </h4>
                       <div className="flex gap-2">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getPriorityColor(
-                            request.priority,
-                          )}`}
-                        >
+                        <Badge variant={getPriorityVariant(request.priority)}>
                           {request.priority}
-                        </span>
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        </Badge>
+                        <Badge
+                          variant={
                             request.status === "in-progress"
-                              ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                              : "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300"
-                          }`}
+                              ? "default"
+                              : "secondary"
+                          }
                         >
                           {request.status}
-                        </span>
+                        </Badge>
                       </div>
                     </div>
-                    <p className="text-gray-600 dark:text-gray-300 mb-3">
+                    <p className="text-muted-foreground mb-3">
                       {request.description}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground">
                       Submitted:{" "}
                       {new Date(request.submittedDate).toLocaleDateString(
                         "en-GB",
                       )}
                     </p>
-                  </div>
-                ))}
-              </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-          )}
+          </TabsContent>
 
           {/* Complaints Tab */}
-          {activeTab === "complaints" && (
-            <div>
-              <button className="mb-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
-                + File New Complaint
-              </button>
-              <div className="space-y-4">
-                {complaints.map((complaint) => (
-                  <div
-                    key={complaint.id}
-                    className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition border border-gray-200 dark:border-gray-700"
-                  >
+          <TabsContent value="complaints">
+            <Button className="mb-6">+ File New Complaint</Button>
+            <div className="space-y-4">
+              {complaints.map((complaint) => (
+                <Card key={complaint.id}>
+                  <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                        <h4 className="text-lg font-bold text-foreground mb-2">
                           {complaint.title}
                         </h4>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-sm text-muted-foreground">
                           {new Date(complaint.date).toLocaleDateString("en-GB")}
                         </p>
                       </div>
-                      <span
-                        className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                      <Badge
+                        variant={
                           complaint.status === "resolved"
-                            ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
-                            : "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                        }`}
+                            ? "default"
+                            : "secondary"
+                        }
                       >
                         {complaint.status}
-                      </span>
+                      </Badge>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-          )}
+          </TabsContent>
 
           {/* Events Tab */}
-          {activeTab === "events" && (
-            <div className="space-y-4">
-              {events.map((event) => (
-                <div
-                  key={event.id}
-                  className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition flex items-start gap-4 border border-gray-200 dark:border-gray-700"
-                >
-                  <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
+          <TabsContent value="events" className="space-y-4">
+            {events.map((event) => (
+              <Card key={event.id}>
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                     <span className="text-2xl">
                       {event.category === "sports"
                         ? "⚽"
@@ -786,142 +701,115 @@ export default function StudentDashboard() {
                     </span>
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                    <h4 className="text-lg font-bold text-foreground mb-1">
                       {event.title}
                     </h4>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                    <p className="text-muted-foreground text-sm mb-2">
                       {event.location}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground">
                       {new Date(event.date).toLocaleDateString("en-GB")}
                     </p>
                   </div>
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
-                    Register
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+                  <Button>Register</Button>
+                </CardContent>
+              </Card>
+            ))}
+          </TabsContent>
 
           {/* Leave Tab */}
-          {activeTab === "leave" && (
-            <div>
-              <button className="mb-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
-                + Apply for Leave
-              </button>
-              <div className="space-y-4">
-                {leaveRequests.map((leave) => (
-                  <div
-                    key={leave.id}
-                    className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition border border-gray-200 dark:border-gray-700"
-                  >
+          <TabsContent value="leave">
+            <Button className="mb-6">+ Apply for Leave</Button>
+            <div className="space-y-4">
+              {leaveRequests.map((leave) => (
+                <Card key={leave.id}>
+                  <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                        <h4 className="text-lg font-bold text-foreground mb-2">
                           {leave.type}
                         </h4>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                        <p className="text-muted-foreground text-sm">
                           {new Date(leave.fromDate).toLocaleDateString("en-GB")}{" "}
                           - {new Date(leave.toDate).toLocaleDateString("en-GB")}
                         </p>
                       </div>
-                      <span
-                        className={`px-4 py-2 rounded-full text-sm font-semibold ${
-                          leave.status === "approved"
-                            ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
-                            : "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300"
-                        }`}
+                      <Badge
+                        variant={
+                          leave.status === "approved" ? "default" : "secondary"
+                        }
                       >
                         {leave.status}
-                      </span>
+                      </Badge>
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-muted-foreground">
                       Submitted:{" "}
                       {new Date(leave.submittedDate).toLocaleDateString(
                         "en-GB",
                       )}
                     </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Roommates Tab */}
-          {activeTab === "roommate" && (
-            <div className="space-y-4">
-              {roommates.map((roommate) => (
-                <div
-                  key={roommate.id}
-                  className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition border border-gray-200 dark:border-gray-700"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 bg-linear-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center shrink-0">
-                      <span className="text-white font-bold text-xl">
-                        {roommate.name.charAt(0)}
-                      </span>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
-                        {roommate.name}
-                      </h4>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm">
-                        {roommate.studentId}
-                      </p>
-                      <div className="mt-3 space-y-1">
-                        <p className="text-sm text-gray-600 dark:text-gray-300">
-                          📧 {roommate.email}
-                        </p>
-                        <p className="text-sm text-gray-600 dark:text-gray-300">
-                          📱 {roommate.phone}
-                        </p>
-                      </div>
-                    </div>
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
-                      Message
-                    </button>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
-          )}
+          </TabsContent>
+
+          {/* Roommates Tab */}
+          <TabsContent value="roommate" className="space-y-4">
+            {roommates.map((roommate) => (
+              <Card key={roommate.id}>
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="w-16 h-16 bg-linear-to-br from-chart-3 to-chart-5 rounded-full flex items-center justify-center shrink-0">
+                    <span className="text-white font-bold text-xl">
+                      {roommate.name.charAt(0)}
+                    </span>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-lg font-bold text-foreground mb-1">
+                      {roommate.name}
+                    </h4>
+                    <p className="text-muted-foreground text-sm">
+                      {roommate.studentId}
+                    </p>
+                    <div className="mt-3 space-y-1">
+                      <p className="text-sm text-muted-foreground">
+                        📧 {roommate.email}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        📱 {roommate.phone}
+                      </p>
+                    </div>
+                  </div>
+                  <Button>Message</Button>
+                </CardContent>
+              </Card>
+            ))}
+          </TabsContent>
 
           {/* Documents Tab */}
-          {activeTab === "documents" && (
-            <div>
-              <div className="space-y-3">
-                {documents.map((doc) => (
-                  <div
-                    key={doc.id}
-                    className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition flex items-center justify-between border border-gray-200 dark:border-gray-700"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                        <FileText className="w-6 h-6 text-red-600" />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white">
-                          {doc.name}
-                        </h4>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          Downloaded:{" "}
-                          {new Date(doc.downloadDate).toLocaleDateString(
-                            "en-GB",
-                          )}
-                        </p>
-                      </div>
+          <TabsContent value="documents" className="space-y-3">
+            {documents.map((doc) => (
+              <Card key={doc.id}>
+                <CardContent className="p-6 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-destructive/10 rounded-xl flex items-center justify-center">
+                      <FileText className="w-6 h-6 text-destructive" />
                     </div>
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
-                      Download
-                    </button>
+                    <div>
+                      <h4 className="font-bold text-foreground">{doc.name}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Downloaded:{" "}
+                        {new Date(doc.downloadDate).toLocaleDateString("en-GB")}
+                      </p>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </main>
-    </div>
+                  <Button>Download</Button>
+                </CardContent>
+              </Card>
+            ))}
+          </TabsContent>
+        </Tabs>
+      </div>
+    </>
   );
 }

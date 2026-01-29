@@ -1,3 +1,5 @@
+import BottomBar from "@/components/bottombar";
+import { LayoutProvider } from "@/contexts/LayoutContext";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -26,10 +28,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased pb-16 md:pb-0`}
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          {children}
+          <LayoutProvider>
+            {children}
+            <BottomBar />
+          </LayoutProvider>
         </ThemeProvider>
       </body>
     </html>

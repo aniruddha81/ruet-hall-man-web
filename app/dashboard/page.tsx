@@ -1,7 +1,12 @@
+import DashboardShell from "@/components/wrapper/DashboardShell";
 import StudentDashboard from "./Dashboard";
 
 function page() {
-  return <StudentDashboard />;
+  return (
+    <DashboardShell>
+      <StudentDashboard />
+    </DashboardShell>
+  );
 }
 
 export default page;

@@ -1,5 +1,17 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Chrome, Github } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -23,130 +35,105 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background via-background to-muted/30 px-4">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-              Welcome Back
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
+        <Card className="shadow-xl border-border/50">
+          <CardHeader className="space-y-1 text-center">
+            <div className="mx-auto mb-4 w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-primary-foreground font-bold text-xl">
+                R
+              </span>
+            </div>
+            <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+            <CardDescription>
               Sign in to your RUET Hall Management account
-            </p>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                placeholder="Enter your email"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                placeholder="Enter your password"
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500"
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="h-11"
                 />
-                <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
-                  Remember me
-                </span>
-              </label>
-              <Link
-                href="/forgot-password"
-                className="text-sm text-blue-600 hover:text-blue-700"
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="h-11"
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 rounded border-input text-primary focus:ring-primary"
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    Remember me
+                  </span>
+                </label>
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-11 text-base"
               >
-                Forgot password?
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
+            </form>
+
+            <div className="relative my-6">
+              <Separator />
+              <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground uppercase">
+                Or continue with
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Button variant="outline" type="button" className="h-11">
+                <Chrome className="mr-2 h-4 w-4" />
+                Google
+              </Button>
+              <Button variant="outline" type="button" className="h-11">
+                <Github className="mr-2 h-4 w-4" />
+                GitHub
+              </Button>
+            </div>
+          </CardContent>
+          <CardFooter className="justify-center">
+            <p className="text-sm text-muted-foreground">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/signup"
+                className="text-primary hover:text-primary/80 font-semibold transition-colors"
+              >
+                Sign up
               </Link>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
-            >
-              {isLoading ? "Signing in..." : "Sign In"}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
-                OR
-              </span>
-            </div>
-          </div>
-
-          {/* Social Login */}
-          <div className="space-y-3">
-            <button
-              type="button"
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-            >
-              <Chrome className="h-5 w-5" />
-              <span className="text-gray-700 dark:text-gray-300 font-medium">
-                Continue with Google
-              </span>
-            </button>
-
-            <button
-              type="button"
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-            >
-              <Github className="h-5 w-5" />
-              <span className="text-gray-700 dark:text-gray-300 font-medium">
-                Continue with GitHub
-              </span>
-            </button>
-          </div>
-
-          {/* Footer */}
-          <p className="text-center text-sm text-gray-600 dark:text-gray-300 mt-6">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/signup"
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              Sign up
-            </Link>
-          </p>
-        </div>
+            </p>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );
