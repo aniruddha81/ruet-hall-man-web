@@ -72,7 +72,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-background via-background to-muted/20">
       {/* Navbar Component */}
-      <Navbar userName="Guest User" userInitials="GU" />
+      <Navbar />
 
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">

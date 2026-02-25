@@ -5,7 +5,6 @@ import type { StudentData } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useState,
@@ -53,17 +52,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
-  const login = useCallback(
-    async (email: string, password: string) => {
-      const res = await studentLogin({ email, password });
-      const studentData = res.data.student_data;
-      setUser(studentData);
-      router.push("/dashboard");
-    },
-    [router],
-  );
+  const login = async (email: string, password: string) => {
+    const res = await studentLogin({ email, password });
+    const studentData = res.data.student_data;
+    setUser(studentData);
+    router.push("/dashboard");
+  };
 
-  const logout = useCallback(async () => {
+  const logout = async () => {
     try {
       await logoutApi();
     } catch {
@@ -71,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setUser(null);
     router.push("/login");
-  }, [router]);
+  };
 
   return (
     <AuthContext.Provider
