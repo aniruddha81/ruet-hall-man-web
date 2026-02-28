@@ -32,9 +32,14 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+type Menus = {
+  lunch: MealMenu[];
+  dinner: MealMenu[];
+};
+
 export default function StudentDashboard() {
   const { user } = useAuth();
-  const [menus, setMenus] = useState<MealMenu[]>([]);
+  const [menus, setMenus] = useState<Menus | undefined>(undefined);
   const [activeTokens, setActiveTokens] = useState<MealToken[]>([]);
   const [applicationStatus, setApplicationStatus] = useState<string | null>(
     null,
@@ -51,13 +56,13 @@ export default function StudentDashboard() {
         ]);
 
         if (menusRes.status === "fulfilled")
-          setMenus(menusRes.value.data?.data ?? []);
+          setMenus(menusRes.value?.data?.menus ?? undefined);
         if (tokensRes.status === "fulfilled")
-          setActiveTokens(tokensRes.value.data?.data ?? []);
+          setActiveTokens(tokensRes.value.data?.tokens ?? []);
 
         try {
           const appRes = await getMyApplicationStatus();
-          setApplicationStatus(appRes.data?.data?.status ?? null);
+          setApplicationStatus(appRes.data?.application?.status ?? null);
         } catch {
           // No application => that's fine
         }
@@ -67,6 +72,7 @@ export default function StudentDashboard() {
         setLoading(false);
       }
     };
+
     fetchDashboardData();
   }, []);
 
@@ -138,7 +144,7 @@ export default function StudentDashboard() {
               <div>
                 <p className="text-muted-foreground text-sm">Tomorrow Menus</p>
                 <p className="text-3xl font-bold text-foreground mt-2">
-                  {menus.length}
+                  {(menus?.lunch?.length ?? 0) + (menus?.dinner?.length ?? 0)}
                 </p>
               </div>
               <div className="w-12 h-12 bg-chart-4/10 rounded-xl flex items-center justify-center">
@@ -190,7 +196,7 @@ export default function StudentDashboard() {
           </Link>
         </CardHeader>
         <CardContent>
-          {menus.length === 0 ? (
+          {!menus || (!menus.lunch?.length && !menus.dinner?.length) ? (
             <p className="text-muted-foreground text-center py-8">
               No menus available for tomorrow yet.
             </p>
@@ -198,29 +204,40 @@ export default function StudentDashboard() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Type</TableHead>
                   <TableHead>Meal</TableHead>
-                  <TableHead>Items</TableHead>
                   <TableHead>Price</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {menus.map((menu) => (
-                  <TableRow key={menu.id}>
-                    <TableCell className="font-medium">
-                      {menu.mealType?.replace(/_/g, " ")}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground max-w-xs truncate">
-                      {menu.items}
-                    </TableCell>
-                    <TableCell className="font-semibold">
-                      ৳{menu.price}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{menu.status}</Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {[...(menus.lunch ?? []), ...(menus.dinner ?? [])].map(
+                  (menu) => {
+                    const mealTypeLabel = menus.lunch?.some(
+                      (m) => m.id === menu.id,
+                    )
+                      ? "Lunch"
+                      : "Dinner";
+                    return (
+                      <TableRow key={menu.id}>
+                        <TableCell className="font-medium text-sm">
+                          {mealTypeLabel}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {menu.mealType?.replace(/_/g, " ")}
+                        </TableCell>
+                        <TableCell className="font-semibold">
+                          ৳{menu.price}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary">
+                            {menu.menuDescription}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  },
+                )}
               </TableBody>
             </Table>
           )}
@@ -248,7 +265,6 @@ export default function StudentDashboard() {
                 <TableRow>
                   <TableHead>Token ID</TableHead>
                   <TableHead>Meal</TableHead>
-                  <TableHead>Date</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
@@ -261,11 +277,11 @@ export default function StudentDashboard() {
                     <TableCell className="font-medium">
                       {token.mealType?.replace(/_/g, " ")}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
+                    {/* <TableCell className="text-muted-foreground">
                       {token.menuDate
                         ? new Date(token.menuDate).toLocaleDateString("en-GB")
                         : "-"}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <Badge
                         variant={

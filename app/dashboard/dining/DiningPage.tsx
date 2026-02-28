@@ -25,9 +25,14 @@ import type { MealMenu, MealToken } from "@/lib/types";
 import { Loader2, UtensilsCrossed } from "lucide-react";
 import { useEffect, useState } from "react";
 
+type Menus = {
+  lunch: MealMenu[];
+  dinner: MealMenu[];
+};
+
 export default function DiningPage() {
   const { user } = useAuth();
-  const [menus, setMenus] = useState<MealMenu[]>([]);
+  const [menus, setMenus] = useState<Menus>({} as Menus);
   const [activeTokens, setActiveTokens] = useState<MealToken[]>([]);
   const [history, setHistory] = useState<MealToken[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,12 +44,12 @@ export default function DiningPage() {
   const fetchData = async () => {
     try {
       const [menusRes, tokensRes, historyRes] = await Promise.allSettled([
-        getTomorrowMenus(user?.hall ?? "ZIA_HALL"),
+        getTomorrowMenus(),
         getMyActiveTokens(),
         getMyTokenHistory(),
       ]);
       if (menusRes.status === "fulfilled")
-        setMenus(menusRes.value.data?.menus ?? []);
+        setMenus(menusRes.value?.data?.menus ?? []);
       if (tokensRes.status === "fulfilled")
         setActiveTokens(tokensRes.value.data?.tokens ?? []);
       if (historyRes.status === "fulfilled")
@@ -131,51 +136,113 @@ export default function DiningPage() {
         </TabsList>
 
         <TabsContent value="menus" className="mt-6">
-          {menus.length === 0 ? (
+          {!menus || (!menus.lunch?.length && !menus.dinner?.length) ? (
             <Card>
               <CardContent className="py-12 text-center text-muted-foreground">
                 No menus available for tomorrow yet. Check back later.
               </CardContent>
             </Card>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {menus.map((menu) => (
-                <Card
-                  key={menu.id}
-                  className="hover:shadow-md transition-shadow"
-                >
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">
-                        {menu.mealType?.replace(/_/g, " ")}
-                      </CardTitle>
-                      <Badge variant="outline">
-                        {menu.availableTokens}/{menu.totalTokens} left
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-muted-foreground text-sm">
-                      {menu.menuDescription}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">৳{menu.price}</span>
-                      <Button
-                        onClick={() => handleBook(menu.id)}
-                        disabled={
-                          bookingMenuId === menu.id || menu.availableTokens <= 0
-                        }
-                        size="sm"
+            <div className="space-y-8">
+              {menus.lunch && menus.lunch.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold mb-4 text-foreground">
+                    Lunch
+                  </h3>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {menus.lunch.map((menu) => (
+                      <Card
+                        key={menu.id}
+                        className="hover:shadow-md transition-shadow"
                       >
-                        {bookingMenuId === menu.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        ) : null}
-                        Book Token
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">
+                              {menu.mealType?.replace(/_/g, " ")}
+                            </CardTitle>
+                            <Badge variant="outline">
+                              {menu.availableTokens}/{menu.totalTokens} left
+                            </Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <p className="text-muted-foreground text-sm">
+                            {menu.menuDescription}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-2xl font-bold">
+                              ৳{menu.price}
+                            </span>
+                            <Button
+                              onClick={() => handleBook(menu.id)}
+                              disabled={
+                                bookingMenuId === menu.id ||
+                                menu.availableTokens <= 0
+                              }
+                              size="sm"
+                            >
+                              {bookingMenuId === menu.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                              ) : null}
+                              Book Token
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {menus.dinner && menus.dinner.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold mb-4 text-foreground">
+                    Dinner
+                  </h3>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {menus.dinner.map((menu) => (
+                      <Card
+                        key={menu.id}
+                        className="hover:shadow-md transition-shadow"
+                      >
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">
+                              {menu.mealType?.replace(/_/g, " ")}
+                            </CardTitle>
+                            <Badge variant="outline">
+                              {menu.availableTokens}/{menu.totalTokens} left
+                            </Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <p className="text-muted-foreground text-sm">
+                            {menu.menuDescription}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-2xl font-bold">
+                              ৳{menu.price}
+                            </span>
+                            <Button
+                              onClick={() => handleBook(menu.id)}
+                              disabled={
+                                bookingMenuId === menu.id ||
+                                menu.availableTokens <= 0
+                              }
+                              size="sm"
+                            >
+                              {bookingMenuId === menu.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                              ) : null}
+                              Book Token
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </TabsContent>

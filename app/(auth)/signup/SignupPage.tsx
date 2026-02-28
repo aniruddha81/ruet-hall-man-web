@@ -63,7 +63,7 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      await studentRegister({
+      const res = await studentRegister({
         name: formData.name,
         email: formData.email,
         password: formData.password,
@@ -73,8 +73,21 @@ export default function SignupPage() {
         session: formData.session,
         phone: formData.phone,
       });
-      // After successful registration, redirect to login
-      router.push("/login");
+      // Tokens are already set in cookies — build user state and go to dashboard
+      setUser({
+        id: res.data.user.id,
+        email: res.data.user.email,
+        name: res.data.user.name,
+        phone: formData.phone,
+        academicDepartment: formData.academicDepartment as AcademicDepartment,
+        rollNumber: formData.rollNumber,
+        session: formData.session,
+        hall: null,
+        roomId: null,
+        status: null,
+        isAllocated: false,
+      });
+      router.push("/dashboard");
     } catch (err) {
       setError(getApiErrorMessage(err));
     } finally {

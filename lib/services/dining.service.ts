@@ -8,11 +8,10 @@ import type {
 
 // =================== STUDENT DINING ===================
 
-export async function getTomorrowMenus(hall: string) {
-  const res = await api.get<ApiResponse<{ menus: MealMenu[] }>>(
-    "/dining/tomorrow-menus",
-    { params: { hall } },
-  );
+export async function getTomorrowMenus() {
+  const res = await api.get<
+    ApiResponse<{ menus: { lunch: MealMenu[]; dinner: MealMenu[] } }>
+  >("/dining/tomorrow-menus");
   return res.data;
 }
 
