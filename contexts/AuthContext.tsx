@@ -1,11 +1,16 @@
 "use client";
 
 import { clearAuthData, getStoredUser, saveAuthData } from "@/lib/auth";
-import { logout as logoutApi, studentLogin } from "@/lib/services/auth.service";
+import {
+  logout as logoutApi,
+  renewAccessToken,
+  studentLogin,
+} from "@/lib/services/auth.service";
 import type { StudentData } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -23,6 +28,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/** Renew access token every 13 minutes (before the 15-minute expiry) */
+const TOKEN_RENEWAL_INTERVAL = 13 * 60 * 1000;
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<StudentData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,6 +42,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const storedUser = getStoredUser();
       if (storedUser) {
         setUser(storedUser);
+        // Immediately try to renew access token on page load
+        renewAccessToken().catch(() => {});
       }
     } catch {
       clearAuthData();
@@ -42,31 +52,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Sync user to localStorage
+  // Sync user to localStorage and manage proactive token renewal
   useEffect(() => {
     if (user) {
       saveAuthData(user);
+
+      // Start proactive access-token renewal interval
+      const intervalId = setInterval(async () => {
+        try {
+          await renewAccessToken();
+        } catch {
+          // If renewal fails, the axios interceptor will handle 401s
+          // and redirect to login if the refresh token is also expired
+        }
+      }, TOKEN_RENEWAL_INTERVAL);
+
+      return () => clearInterval(intervalId);
     } else {
       clearAuthData();
     }
   }, [user]);
 
-  const login = async (email: string, password: string) => {
-    const res = await studentLogin({ email, password });
-    const studentData = res.data.student_data;
-    setUser(studentData);
-    router.push("/dashboard");
-  };
+  const login = useCallback(
+    async (email: string, password: string) => {
+      const res = await studentLogin({ email, password });
+      const studentData = res.data.student_data;
+      setUser(studentData);
+      router.push("/dashboard");
+    },
+    [router],
+  );
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await logoutApi();
     } catch {
       // Even if backend logout fails, clear local state
     }
+    // Clear httpOnly cookies on the frontend domain (all paths)
+    try {
+      await fetch("/api/auth/clear-cookies", { method: "POST" });
+    } catch {
+      // Non-critical
+    }
     setUser(null);
     router.push("/login");
-  };
+  }, [router]);
 
   return (
     <AuthContext.Provider

@@ -1,22 +1,39 @@
 import { type NextRequest, NextResponse } from "next/server";
 
+/**
+ * Routes that only unauthenticated users should access.
+ * Authenticated users visiting these will be sent to the dashboard.
+ */
+const PUBLIC_ONLY_ROUTES = ["/login", "/signup"];
+
+/**
+ * Routes that require authentication.
+ * Unauthenticated users hitting these will be redirected to /login.
+ */
 const PROTECTED_ROUTE_PREFIXES = ["/dashboard"];
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
+  // The backend sets httpOnly refreshToken cookie (10 days) via the rewrite proxy.
+  // Its presence is the source of truth for "has an active session".
+  const refreshToken = request.cookies.get("refreshToken")?.value;
+
+  const isPublicOnlyRoute = PUBLIC_ONLY_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/"),
+  );
+
   const isProtectedRoute = PROTECTED_ROUTE_PREFIXES.some((route) =>
     pathname.startsWith(route),
   );
 
-  if (!isProtectedRoute) {
-    return NextResponse.next();
+  // Authenticated users should not access login/signup pages
+  if (refreshToken && isPublicOnlyRoute) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  const accessToken = request.cookies.get("accessToken")?.value;
-  const refreshToken = request.cookies.get("refreshToken")?.value;
-
-  if (!accessToken && !refreshToken) {
+  // Unauthenticated users cannot access protected routes
+  if (!refreshToken && isProtectedRoute) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
