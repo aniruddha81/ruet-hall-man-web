@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  clearAuthData,
+  getStoredToken,
+  getStoredUser,
+  saveAuthData,
+} from "@/lib/auth";
 import { logout as logoutApi, studentLogin } from "@/lib/services/auth.service";
 import type { StudentData } from "@/lib/types";
 import { useRouter } from "next/navigation";
@@ -22,8 +28,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const USER_STORAGE_KEY = "ruet_student_user";
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<StudentData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,29 +36,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Restore user from localStorage on mount
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(USER_STORAGE_KEY);
-      if (stored) {
-        setUser(JSON.parse(stored));
+      const storedUser = getStoredUser();
+      if (storedUser) {
+        setUser(storedUser);
       }
     } catch {
-      localStorage.removeItem(USER_STORAGE_KEY);
+      clearAuthData();
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // Sync user to localStorage
+  // Sync user to localStorage and set cookies
   useEffect(() => {
     if (user) {
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+      const token = getStoredToken();
+      saveAuthData(user, token || undefined);
     } else {
-      localStorage.removeItem(USER_STORAGE_KEY);
+      clearAuthData();
     }
   }, [user]);
 
   const login = async (email: string, password: string) => {
     const res = await studentLogin({ email, password });
     const studentData = res.data.student_data;
+    // In a real app, you'd get the token from the login response
+    // For now, we save the user data which triggers cookie setting
     setUser(studentData);
     router.push("/dashboard");
   };
