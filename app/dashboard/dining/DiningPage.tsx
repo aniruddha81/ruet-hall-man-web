@@ -20,8 +20,10 @@ import {
   getMyActiveTokens,
   getMyTokenHistory,
   getTomorrowMenus,
+  processPayment,
 } from "@/lib/services/dining.service";
 import type { MealMenu, MealToken } from "@/lib/types";
+import { PAYMENT_METHODS } from "@/lib/types";
 import { Loader2, UtensilsCrossed } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -40,6 +42,10 @@ export default function DiningPage() {
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [payingTokenIds, setPayingTokenIds] = useState<string[]>([]);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [transactionId, setTransactionId] = useState("");
+  const [processingPayment, setProcessingPayment] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -95,6 +101,38 @@ export default function DiningPage() {
     }
   };
 
+  const handlePayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (payingTokenIds.length === 0 || !paymentMethod || !transactionId) return;
+    setProcessingPayment(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      await processPayment({
+        tokenIds: payingTokenIds,
+        paymentMethod,
+        transactionId,
+      });
+      setSuccess("Payment processed successfully!");
+      setPayingTokenIds([]);
+      setPaymentMethod("");
+      setTransactionId("");
+      await fetchData();
+    } catch (err) {
+      setError(getApiErrorMessage(err));
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
+
+  const toggleTokenForPayment = (tokenId: string) => {
+    setPayingTokenIds((prev) =>
+      prev.includes(tokenId)
+        ? prev.filter((id) => id !== tokenId)
+        : [...prev, tokenId],
+    );
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -132,6 +170,7 @@ export default function DiningPage() {
           <TabsTrigger value="active">
             Active Tokens ({activeTokens.length})
           </TabsTrigger>
+          <TabsTrigger value="pay">Pay</TabsTrigger>
           <TabsTrigger value="history">History</TabsTrigger>
         </TabsList>
 
@@ -308,6 +347,102 @@ export default function DiningPage() {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        <TabsContent value="pay" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Pay for Meal Tokens</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {activeTokens.filter((t) => !t.paymentId).length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">
+                  No unpaid tokens. Book tokens first from the menus tab.
+                </p>
+              ) : (
+                <form onSubmit={handlePayment} className="space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">
+                      Select tokens to pay for:
+                    </p>
+                    {activeTokens
+                      .filter((t) => !t.paymentId)
+                      .map((token) => (
+                        <label
+                          key={token.id}
+                          className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={payingTokenIds.includes(token.id)}
+                            onChange={() => toggleTokenForPayment(token.id)}
+                            className="rounded"
+                          />
+                          <span className="flex-1">
+                            {token.mealType} -{" "}
+                            {new Date(token.mealDate).toLocaleDateString()} -
+                            Qty: {token.quantity}
+                          </span>
+                          <span className="font-semibold">
+                            ৳{token.totalAmount}
+                          </span>
+                        </label>
+                      ))}
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">
+                        Payment Method
+                      </label>
+                      <select
+                        value={paymentMethod}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        required
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        <option value="">Select method</option>
+                        {PAYMENT_METHODS.map((m) => (
+                          <option key={m} value={m}>
+                            {m}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">
+                        Transaction ID
+                      </label>
+                      <input
+                        type="text"
+                        value={transactionId}
+                        onChange={(e) => setTransactionId(e.target.value)}
+                        required
+                        placeholder="Enter transaction reference"
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      />
+                    </div>
+                  </div>
+                  {payingTokenIds.length > 0 && (
+                    <p className="text-sm font-medium">
+                      Total: ৳
+                      {activeTokens
+                        .filter((t) => payingTokenIds.includes(t.id))
+                        .reduce((sum, t) => sum + t.totalAmount, 0)}
+                    </p>
+                  )}
+                  <Button
+                    type="submit"
+                    disabled={processingPayment || payingTokenIds.length === 0}
+                  >
+                    {processingPayment && (
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    )}
+                    Process Payment
+                  </Button>
+                </form>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="history" className="mt-6">
