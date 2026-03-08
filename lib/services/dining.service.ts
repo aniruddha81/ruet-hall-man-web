@@ -10,9 +10,27 @@ import type {
 
 export async function getTomorrowMenus() {
   const res = await api.get<
-    ApiResponse<{ menus: { lunch: MealMenu[]; dinner: MealMenu[] } }>
+    ApiResponse<{ lunch: MealMenu[]; dinner: MealMenu[] }>
   >("/dining/tomorrow-menus");
-  return res.data;
+
+  const rawMenus = (res.data.data as
+    | {
+        lunch?: MealMenu[];
+        dinner?: MealMenu[];
+        menus?: { lunch?: MealMenu[]; dinner?: MealMenu[] };
+      }
+    | undefined) ?? { lunch: [], dinner: [] };
+  const menus = rawMenus.menus ?? rawMenus;
+
+  return {
+    ...res.data,
+    data: {
+      menus: {
+        lunch: menus.lunch ?? [],
+        dinner: menus.dinner ?? [],
+      },
+    },
+  };
 }
 
 export async function bookMealTokens(data: {
