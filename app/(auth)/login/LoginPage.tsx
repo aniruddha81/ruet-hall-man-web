@@ -42,9 +42,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background via-background to-muted/30 px-4">
+    <div
+        className="flex min-h-screen items-center justify-center px-4 bg-cover bg-center"
+        style={{ backgroundImage: "url('/ruet-gate.jpg')" }}
+          >
       <div className="w-full max-w-md">
-        <Card className="shadow-xl border-border/50">
+        <Card className="shadow-xl border-border/50 bg-white/90 backdrop-blur">
           <CardHeader className="space-y-1 text-center">
             <div className="mx-auto mb-4 flex items-center justify-center">
               <Image
