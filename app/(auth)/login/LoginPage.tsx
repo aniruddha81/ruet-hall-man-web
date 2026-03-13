@@ -16,6 +16,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { getApiErrorMessage } from "@/lib/api";
 import Link from "next/link";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -43,11 +44,14 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <Card className="shadow-xl border-border/50">
           <CardHeader className="space-y-1 text-center">
-            <div className="mx-auto mb-4 w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-primary-foreground font-bold text-xl">
-                R
-              </span>
-            </div>
+            <div className="mx-auto mb-4 flex items-center justify-center">
+              <Image
+                src="/ruet-logo.png"
+                alt="RUET Logo"
+                width={50}
+                height={50}
+                />
+              </div>
             <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
             <CardDescription>
               Sign in to your RUET Hall Management account
