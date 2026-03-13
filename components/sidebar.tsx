@@ -12,11 +12,12 @@ import { useLayout } from "@/contexts/LayoutContext";
 import {
   ClipboardList,
   CreditCard,
-  HelpCircle,
   Home,
   LogOut,
   Pin,
   PinOff,
+  Settings,
+  User,
   UtensilsCrossed,
   X,
 } from "lucide-react";
@@ -56,13 +57,18 @@ export default function Sidebar() {
     },
     {
       label: "Payments",
-      href: "/dashboard#payments",
+      href: "/dashboard/payments",
       icon: CreditCard,
     },
     {
-      label: "Support",
-      href: "/support",
-      icon: HelpCircle,
+      label: "Profile",
+      href: "/dashboard/profile",
+      icon: User,
+    },
+    {
+      label: "Settings",
+      href: "/dashboard/settings",
+      icon: Settings,
     },
   ];
 
