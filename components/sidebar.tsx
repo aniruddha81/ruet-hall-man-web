@@ -36,8 +36,12 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { logout } = useAuth();
 
-  // Sidebar is expanded if pinned OR hovered (on desktop)
   const isExpanded = isSidebarPinned || isSidebarHovered;
+  const desktopLabelClass = `min-w-0 overflow-hidden whitespace-nowrap text-left transition-[max-width,opacity,margin,transform] duration-300 ease-out ${
+    isExpanded
+      ? "ml-1 max-w-[160px] translate-x-0 opacity-100"
+      : "ml-0 max-w-0 -translate-x-1 opacity-0"
+  }`;
 
   const navLinks = [
     {
@@ -73,7 +77,6 @@ export default function Sidebar() {
   ];
 
   const handleLinkClick = () => {
-    // Only close sidebar on mobile when a link is clicked
     if (typeof window !== "undefined" && window.innerWidth < 768) {
       closeMobile();
     }
@@ -81,24 +84,22 @@ export default function Sidebar() {
 
   return (
     <TooltipProvider>
-      {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden animate-in fade-in"
+          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm animate-in fade-in md:hidden"
           onClick={closeMobile}
         />
       )}
 
-      {/* Mobile Sidebar (Drawer) */}
       <aside
-        className={`fixed top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-sidebar border-r border-sidebar-border transition-transform duration-300 z-50 md:hidden ${
+        className={`fixed left-0 top-16 z-50 h-[calc(100vh-4rem)] w-72 border-r border-sidebar-border bg-sidebar transition-transform duration-300 md:hidden ${
           isMobileOpen
             ? "translate-x-0 animate-in slide-in-from-left"
             : "-translate-x-full"
         }`}
       >
-        <div className="flex flex-col h-full py-4">
-          <div className="px-4 mb-6 flex items-center justify-between">
+        <div className="flex h-full flex-col py-4">
+          <div className="mb-6 flex items-center justify-between px-4">
             <span className="font-semibold text-sidebar-foreground">Menu</span>
             <Button
               variant="ghost"
@@ -119,11 +120,11 @@ export default function Sidebar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                  className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
                     isActive
                       ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                       : "text-sidebar-foreground hover:bg-sidebar-accent/50"
-                  }`}
+                  } justify-start px-1`}
                   onClick={handleLinkClick}
                 >
                   <Icon className="h-5 w-5" />
@@ -133,11 +134,11 @@ export default function Sidebar() {
             })}
           </nav>
 
-          <div className="p-4 border-t border-sidebar-border">
+          <div className="border-t border-sidebar-border p-4">
             <Button
               variant="ghost"
               onClick={logout}
-              className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+              className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive"
             >
               <LogOut className="mr-3 h-5 w-5" />
               Sign Out
@@ -146,26 +147,22 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {/* Desktop Sidebar (Always visible, collapsible) */}
       <aside
-        className={`fixed top-16 left-0 h-[calc(100vh-4rem)] bg-sidebar border-r border-sidebar-border transition-all duration-300 z-40 hidden md:block ${
+        className={`fixed left-0 top-16 z-40 hidden h-[calc(100vh-4rem)] overflow-hidden border-r border-sidebar-border bg-sidebar transition-[width] duration-300 ease-out md:block ${
           isExpanded ? "w-64" : "w-16"
         }`}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <div className="flex flex-col h-full py-4">
-          {/* Pin/Unpin Button */}
-          <div
-            className={`px-2 mb-4 ${isExpanded ? "flex justify-end" : "flex justify-center"}`}
-          >
+        <div className="flex h-full flex-col py-4">
+          <div className="mb-4 flex justify-end px-2">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={togglePin}
-                  className="h-8 w-8 text-sidebar-foreground hover:bg-sidebar-accent"
+                  className="h-10 w-10 text-sidebar-foreground hover:bg-sidebar-accent"
                 >
                   {isSidebarPinned ? (
                     <PinOff className="h-4 w-4" />
@@ -190,18 +187,16 @@ export default function Sidebar() {
                   <TooltipTrigger asChild>
                     <Link
                       href={link.href}
-                      className={`flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-lg transition-colors ${
+                      className={`flex h-11 items-center rounded-lg text-sm font-medium transition-colors ${
                         isActive
                           ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                           : "text-sidebar-foreground hover:bg-sidebar-accent/50"
-                      } ${!isExpanded && "justify-center"}`}
+                      } justify-start px-1`}
                     >
-                      <Icon className="h-5 w-5 shrink-0" />
-                      {isExpanded && (
-                        <span className="whitespace-nowrap overflow-hidden">
-                          {link.label}
-                        </span>
-                      )}
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center">
+                        <Icon className="h-5 w-5 shrink-0" />
+                      </span>
+                      <span className={desktopLabelClass}>{link.label}</span>
                     </Link>
                   </TooltipTrigger>
                   {!isExpanded && (
@@ -212,20 +207,18 @@ export default function Sidebar() {
             })}
           </nav>
 
-          <div className="px-2 border-t border-sidebar-border pt-4">
+          <div className="border-t border-sidebar-border px-2 pt-4">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
                   onClick={logout}
-                  className={`w-full text-destructive hover:text-destructive hover:bg-destructive/10 ${
-                    !isExpanded ? "justify-center px-3" : "justify-start"
-                  }`}
+                  className="flex h-11 w-full items-center justify-start overflow-hidden px-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
                 >
-                  <LogOut
-                    className={`h-5 w-5 shrink-0 ${isExpanded && "mr-3"}`}
-                  />
-                  {isExpanded && <span>Sign Out</span>}
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center">
+                    <LogOut className="h-5 w-5 shrink-0" />
+                  </span>
+                  <span className={desktopLabelClass}>Sign Out</span>
                 </Button>
               </TooltipTrigger>
               {!isExpanded && (

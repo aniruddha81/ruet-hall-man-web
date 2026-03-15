@@ -3,6 +3,7 @@ import axios, {
   type AxiosInstance,
   type InternalAxiosRequestConfig,
 } from "axios";
+import { clearAuthData } from "@/lib/auth";
 
 const API_BASE_URL = "/api";
 
@@ -82,12 +83,22 @@ api.interceptors.response.use(
         // Retry the original request
         return api(originalRequest);
       } catch (refreshError) {
-        // Token refresh failed — refreshToken is invalid/expired
+        // Token refresh failed - refreshToken is invalid/expired
         processQueue(refreshError as AxiosError);
 
         // Redirect to login page
         if (typeof window !== "undefined") {
-          window.location.href = "/login";
+          clearAuthData();
+
+          const isAuthRoute = ["/login", "/signup"].some(
+            (route) =>
+              window.location.pathname === route ||
+              window.location.pathname.startsWith(`${route}/`),
+          );
+
+          if (!isAuthRoute) {
+            window.location.href = "/login";
+          }
         }
 
         return Promise.reject(refreshError);

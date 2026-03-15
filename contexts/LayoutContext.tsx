@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 interface LayoutContextType {
   isSidebarPinned: boolean;
@@ -15,11 +15,8 @@ interface LayoutContextType {
 const LayoutContext = createContext<LayoutContextType | undefined>(undefined);
 
 export function LayoutProvider({ children }: { children: React.ReactNode }) {
-  // Pinned = permanently expanded on desktop
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
-  // Hovered = temporarily expanded on desktop when mouse enters
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
-  // Mobile drawer open/close
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const togglePin = () => {
@@ -37,6 +34,17 @@ export function LayoutProvider({ children }: { children: React.ReactNode }) {
   const closeMobile = () => {
     setIsMobileOpen(false);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMobileOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <LayoutContext.Provider

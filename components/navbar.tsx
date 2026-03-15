@@ -19,7 +19,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Bell,
-  HelpCircle,
+  GraduationCap,
   LogOut,
   Menu,
   Moon,
@@ -29,208 +29,126 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { useState } from "react";
 
 interface NavbarProps {
   onMenuClick?: () => void;
-  showMenuOnDesktop?: boolean;
 }
 
-export default function Navbar({
-  onMenuClick,
-  showMenuOnDesktop = true,
-}: NavbarProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export default function Navbar({ onMenuClick }: NavbarProps) {
   const { theme, setTheme } = useTheme();
   const { user, logout } = useAuth();
 
   const userName = user?.name ?? "Student";
   const userInitials = userName
     .split(" ")
-    .map((n) => n[0])
+    .map((namePart) => namePart[0])
     .join("")
     .slice(0, 2)
     .toUpperCase();
 
-  const handleMenuClick = () => {
-    if (onMenuClick) {
-      onMenuClick();
-    } else {
-      setIsMenuOpen(!isMenuOpen);
-    }
-  };
-
-  const navLinks = [
-    { label: "Dashboard", href: "/dashboard" },
-    { label: "Payments", href: "/dashboard#payments" },
-    { label: "Notices", href: "/dashboard#notices" },
-    { label: "Support", href: "/support" },
-  ];
-
   return (
     <TooltipProvider>
-      <header className="bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 shadow-sm sticky top-0 z-50 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo and Brand */}
-            <Link href="/" className="flex items-center space-x-3 group">
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-                <span className="text-primary-foreground font-bold text-lg">
-                  R
-                </span>
-              </div>
-              <div className="hidden sm:block">
-                <h1 className="text-xl font-bold text-foreground">RUET</h1>
-                <p className="text-xs text-muted-foreground">Hall Management</p>
-              </div>
-            </Link>
+      <header className="sticky top-0 z-50 border-b border-border bg-background/95 shadow-sm backdrop-blur supports-backdrop-filter:bg-background/60">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link href="/dashboard" className="flex items-center gap-3 group">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-md transition-shadow group-hover:shadow-lg">
+              <GraduationCap className="h-5 w-5" />
+            </div>
+            <div className="hidden sm:block">
+              <h1 className="text-xl font-bold text-foreground">RUET Student</h1>
+              <p className="text-xs text-muted-foreground">Hall Management</p>
+            </div>
+          </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-
-            {/* Right Side Actions */}
-            <div className="flex items-center space-x-2">
-              {/* Dark Mode Toggle */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() =>
-                      setTheme(theme === "dark" ? "light" : "dark")
-                    }
-                    className="rounded-lg"
-                  >
-                    <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span className="sr-only">Toggle theme</span>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {theme === "dark"
-                    ? "Switch to Light Mode"
-                    : "Switch to Dark Mode"}
-                </TooltipContent>
-              </Tooltip>
-
-              {/* Notifications */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="relative rounded-lg"
-                  >
-                    <Bell className="h-5 w-5" />
-                    <span className="absolute top-2 right-2 w-2 h-2 bg-destructive rounded-full animate-pulse" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Notifications</TooltipContent>
-              </Tooltip>
-
-              {/* Mobile Menu Toggle */}
-              {user ? (
+          <div className="flex items-center gap-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={handleMenuClick}
-                  className={`rounded-lg ${
-                    onMenuClick && !showMenuOnDesktop
-                      ? "md:hidden"
-                      : onMenuClick
-                        ? ""
-                        : "md:hidden"
-                  }`}
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="rounded-lg"
                 >
-                  <Menu className="h-5 w-5" />
+                  <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <span className="sr-only">Toggle theme</span>
                 </Button>
-              ) : null}
+              </TooltipTrigger>
+              <TooltipContent>
+                {theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              </TooltipContent>
+            </Tooltip>
 
-              {/* Profile Dropdown */}
-              {user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="flex items-center space-x-2 px-2 rounded-lg"
-                    >
-                      <Avatar className="h-8 w-8 ring-2 ring-primary/20">
-                        <AvatarFallback className="bg-primary text-primary-foreground text-sm font-semibold">
-                          {userInitials}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="hidden sm:block text-left">
-                        <p className="text-sm font-medium text-foreground">
-                          {userName}
-                        </p>
-                        <p className="text-xs text-muted-foreground">Student</p>
-                      </div>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium">{userName}</p>
-                        <p className="text-xs text-muted-foreground">Student</p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard/profile" className="cursor-pointer">
-                        <User className="mr-2 h-4 w-4" />
-                        My Profile
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard/settings" className="cursor-pointer">
-                        <Settings className="mr-2 h-4 w-4" />
-                        Settings
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/help" className="cursor-pointer">
-                        <HelpCircle className="mr-2 h-4 w-4" />
-                        Help & Support
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={logout}
-                      className="text-destructive focus:text-destructive cursor-pointer"
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : null}
-            </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative rounded-lg">
+                  <Bell className="h-5 w-5" />
+                  <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                  <span className="sr-only">Notifications</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Notifications</TooltipContent>
+            </Tooltip>
+
+            {user && onMenuClick ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onMenuClick}
+                className="rounded-lg md:hidden"
+              >
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Open navigation</span>
+              </Button>
+            ) : null}
+
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2 rounded-lg px-2">
+                    <Avatar className="h-8 w-8 ring-2 ring-primary/20">
+                      <AvatarFallback className="bg-primary text-sm font-semibold text-primary-foreground">
+                        {userInitials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="hidden text-left sm:block">
+                      <p className="text-sm font-medium text-foreground">{userName}</p>
+                      <p className="text-xs text-muted-foreground">Student</p>
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium">{userName}</p>
+                      <p className="text-xs text-muted-foreground">Student</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/profile" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      My Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/settings" className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={logout}
+                    className="cursor-pointer text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : null}
           </div>
-
-          {/* Mobile Navigation */}
-          {isMenuOpen && (
-            <nav className="md:hidden pb-4 space-y-1 animate-in slide-in-from-top-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block px-4 py-3 rounded-lg text-base font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          )}
         </div>
       </header>
     </TooltipProvider>
