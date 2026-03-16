@@ -104,7 +104,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background via-muted/20 to-background px-4 py-10">
       <div className="w-full max-w-6xl">
         <Card className="overflow-hidden shadow-2xl">
           <div className="grid md:grid-cols-2">
