@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
 import { getApiErrorMessage } from "@/lib/api";
-import { Eye, EyeOff, GraduationCap } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -26,7 +27,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
 
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
@@ -41,41 +42,47 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background via-muted/20 to-background px-4 py-10">
-      <div className="w-full max-w-5xl">
-        <Card className="overflow-hidden border-border/70 shadow-2xl">
-          <div className="grid md:grid-cols-[0.95fr_1.05fr]">
-            <section className="hidden border-r border-border/60 bg-muted/30 p-8 md:flex md:flex-col md:justify-between lg:p-10">
-              <div className="space-y-6">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg">
-                  <GraduationCap className="h-7 w-7" />
-                </div>
-                <div className="space-y-3">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                    RUET Hall Management
-                  </p>
-                  <h1 className="text-3xl font-bold leading-tight text-foreground">
-                    Student Portal Login
-                  </h1>
-                  <p className="text-sm text-muted-foreground">
-                    Sign in to view allocation status, notices, and hall
-                    services.
-                  </p>
-                </div>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background px-4 py-10">
+      <div className="w-full max-w-6xl">
+        <Card className="overflow-hidden shadow-2xl">
+          <div className="grid md:grid-cols-2">
+
+            {/* LEFT IMAGE SECTION */}
+            <section className="relative hidden md:block min-h-[600px]">
+              <Image
+                src="/ruet-gate.jpeg"
+                alt="RUET Gate"
+                fill
+                className="object-cover"
+                priority
+              />
+
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black/50"></div>
+
+              {/* Text */}
+              <div className="absolute bottom-10 left-10 text-white z-10">
+                <p className="text-sm uppercase tracking-wider text-gray-200">
+                  RUET Hall Management
+                </p>
+
+                <h1 className="text-3xl font-bold leading-tight mt-2">
+                  Student Portal Login
+                </h1>
+
+                <p className="mt-3 text-sm text-gray-200 max-w-sm">
+                  Sign in to view allocation status, notices and hall services.
+                </p>
               </div>
-              <p className="text-sm text-muted-foreground">
-                For registered RUET students only.
-              </p>
             </section>
 
+            {/* RIGHT FORM SECTION */}
             <section className="p-6 sm:p-8 lg:p-10">
-              <CardHeader className="space-y-2 px-0 pt-0 text-center sm:text-left">
-                <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground md:hidden">
-                  <GraduationCap className="h-6 w-6" />
-                </div>
+              <CardHeader className="space-y-2 px-0 pt-0">
                 <CardTitle className="text-2xl font-bold">
                   Welcome Back
                 </CardTitle>
+
                 <CardDescription>
                   Sign in to continue to your RUET hall dashboard.
                 </CardDescription>
@@ -83,16 +90,17 @@ export default function LoginPage() {
 
               <CardContent className="px-0 pb-0">
                 <form onSubmit={handleSubmit} className="space-y-4">
+
                   {error && (
-                    <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+                    <div className="rounded-lg border border-red-400 bg-red-100 p-3 text-sm text-red-600">
                       {error}
                     </div>
                   )}
 
+                  {/* EMAIL */}
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label>Email</Label>
                     <Input
-                      id="email"
                       type="email"
                       required
                       value={email}
@@ -102,11 +110,12 @@ export default function LoginPage() {
                     />
                   </div>
 
+                  {/* PASSWORD */}
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label>Password</Label>
+
                     <div className="relative">
                       <Input
-                        id="password"
                         type={showPassword ? "text" : "password"}
                         required
                         value={password}
@@ -114,6 +123,7 @@ export default function LoginPage() {
                         placeholder="Enter your password"
                         className="h-11 pr-10"
                       />
+
                       <Button
                         type="button"
                         variant="ghost"
@@ -130,6 +140,7 @@ export default function LoginPage() {
                     </div>
                   </div>
 
+                  {/* LOGIN BUTTON */}
                   <Button
                     type="submit"
                     disabled={isLoading}
@@ -141,7 +152,7 @@ export default function LoginPage() {
 
                 <div className="relative my-6">
                   <Separator />
-                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs uppercase text-muted-foreground">
+                  <span className="absolute left-1/2 top-1/2 bg-card px-2 text-xs -translate-x-1/2 -translate-y-1/2">
                     Student Access
                   </span>
                 </div>
@@ -151,7 +162,7 @@ export default function LoginPage() {
                 </p>
               </CardContent>
 
-              <CardFooter className="justify-center px-0 sm:justify-start">
+              <CardFooter className="px-0">
                 <p className="text-sm text-muted-foreground">
                   Don&apos;t have an account?{" "}
                   <Link href="/signup" className="font-semibold text-primary">
@@ -160,6 +171,7 @@ export default function LoginPage() {
                 </p>
               </CardFooter>
             </section>
+
           </div>
         </Card>
       </div>

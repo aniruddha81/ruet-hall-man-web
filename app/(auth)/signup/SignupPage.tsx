@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,7 +18,7 @@ import { getApiErrorMessage } from "@/lib/api";
 import { studentRegister } from "@/lib/services/auth.service";
 import type { AcademicDepartment } from "@/lib/types";
 import { ACADEMIC_DEPARTMENTS } from "@/lib/types";
-import { Eye, EyeOff, UserRoundPlus } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -33,10 +34,12 @@ export default function SignupPage() {
     session: "",
     phone: "",
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const router = useRouter();
   const { setUser } = useAuth();
 
@@ -49,7 +52,7 @@ export default function SignupPage() {
     });
   };
 
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
 
@@ -76,7 +79,7 @@ export default function SignupPage() {
         session: formData.session,
         phone: formData.phone,
       });
-      // Tokens are already set in cookies — build user state and go to dashboard
+
       setUser({
         id: res.data.user.id,
         email: res.data.user.email,
@@ -91,6 +94,7 @@ export default function SignupPage() {
         status: null,
         isAllocated: false,
       });
+
       router.push("/dashboard");
     } catch (err) {
       setError(getApiErrorMessage(err));
@@ -100,38 +104,42 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background via-muted/20 to-background px-4 py-10">
-      <div className="w-full max-w-5xl">
-        <Card className="overflow-hidden border-border/70 shadow-2xl">
-          <div className="grid md:grid-cols-[0.95fr_1.05fr]">
-            <section className="hidden border-r border-border/60 bg-muted/30 p-8 md:flex md:flex-col md:justify-between lg:p-10">
-              <div className="space-y-6">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg">
-                  <UserRoundPlus className="h-7 w-7" />
-                </div>
-                <div className="space-y-3">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                    RUET Hall Management
-                  </p>
-                  <h1 className="text-3xl font-bold leading-tight text-foreground">
-                    Student Account Signup
-                  </h1>
-                  <p className="text-sm text-muted-foreground">
-                    Create your account to access hall allocation updates and
-                    student services.
-                  </p>
-                </div>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background px-4 py-10">
+      <div className="w-full max-w-6xl">
+        <Card className="overflow-hidden shadow-2xl">
+          <div className="grid md:grid-cols-2">
+
+            {/* LEFT IMAGE SECTION */}
+            <section className="relative hidden md:block">
+              <Image
+                src="/ruet-gate.jpeg"
+                alt="RUET Gate"
+                fill
+                className="object-cover"
+                priority
+              />
+
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black/50"></div>
+
+              {/* Text */}
+              <div className="absolute bottom-10 left-10 text-white z-10">
+                <h1 className="text-3xl font-bold leading-tight">
+                  RUET Hall Management
+                  <br />
+                  Control Panel
+                </h1>
+
+                <p className="mt-3 text-sm text-gray-200 max-w-sm">
+                  Manage hall allocation, student services and administration
+                  easily.
+                </p>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Use your own academic and contact information.
-              </p>
             </section>
 
-            <section className="p-6 sm:p-8 lg:p-10">
-              <CardHeader className="space-y-2 px-0 pt-0 text-center sm:text-left">
-                <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground md:hidden">
-                  <UserRoundPlus className="h-6 w-6" />
-                </div>
+            {/* RIGHT FORM SECTION */}
+            <section className="p-8 lg:p-10">
+              <CardHeader className="px-0 pt-0">
                 <CardTitle className="text-2xl font-bold">
                   Create Account
                 </CardTitle>
@@ -140,81 +148,73 @@ export default function SignupPage() {
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="max-h-[70vh] overflow-y-auto px-0 pb-0">
+              <CardContent className="px-0">
                 <form onSubmit={handleSubmit} className="space-y-4">
+
                   {error && (
-                    <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+                    <div className="rounded-lg border border-red-400 bg-red-100 p-3 text-sm text-red-600">
                       {error}
                     </div>
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label>Full Name</Label>
                     <Input
-                      id="name"
                       name="name"
-                      type="text"
                       required
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Enter your full name"
-                      className="h-11"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label>Email</Label>
                     <Input
-                      id="email"
-                      name="email"
                       type="email"
+                      name="email"
                       required
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your email"
-                      className="h-11"
                     />
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="space-y-2">
-                      <Label htmlFor="rollNumber">Roll Number</Label>
+                      <Label>Roll Number</Label>
                       <Input
-                        id="rollNumber"
-                        name="rollNumber"
                         type="number"
+                        name="rollNumber"
                         required
                         value={formData.rollNumber}
                         onChange={handleChange}
-                        placeholder="e.g. 2004001"
-                        className="h-11"
+                        placeholder="2004001"
                       />
                     </div>
+
                     <div className="space-y-2">
-                      <Label htmlFor="session">Session</Label>
+                      <Label>Session</Label>
                       <Input
-                        id="session"
                         name="session"
-                        type="text"
                         required
                         value={formData.session}
                         onChange={handleChange}
-                        placeholder="e.g. 2020-21"
-                        className="h-11"
+                        placeholder="2020-21"
                       />
                     </div>
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2">
+
                     <div className="space-y-2">
-                      <Label htmlFor="academicDepartment">Department</Label>
+                      <Label>Department</Label>
                       <select
-                        id="academicDepartment"
                         name="academicDepartment"
-                        required
                         value={formData.academicDepartment}
                         onChange={handleChange}
-                        className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="w-full border rounded-md h-10 px-3"
+                        required
                       >
                         <option value="">Select</option>
                         {ACADEMIC_DEPARTMENTS.map((dept) => (
@@ -224,102 +224,95 @@ export default function SignupPage() {
                         ))}
                       </select>
                     </div>
+
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone</Label>
+                      <Label>Phone</Label>
                       <Input
-                        id="phone"
                         name="phone"
-                        type="text"
                         required
                         value={formData.phone}
                         onChange={handleChange}
                         placeholder="01XXXXXXXXX"
-                        className="h-11"
                       />
                     </div>
+
                   </div>
 
+                  {/* PASSWORD */}
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label>Password</Label>
+
                     <div className="relative">
                       <Input
-                        id="password"
-                        name="password"
                         type={showPassword ? "text" : "password"}
+                        name="password"
                         required
                         value={formData.password}
                         onChange={handleChange}
-                        placeholder="Create a strong password"
-                        className="h-11 pr-10"
+                        placeholder="Create password"
                       />
-                      <Button
+
+                      <button
                         type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2"
+                        className="absolute right-3 top-3"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                        )}
-                      </Button>
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
                     </div>
                   </div>
 
+                  {/* CONFIRM PASSWORD */}
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <Label>Confirm Password</Label>
+
                     <div className="relative">
                       <Input
-                        id="confirmPassword"
-                        name="confirmPassword"
                         type={showConfirmPassword ? "text" : "password"}
+                        name="confirmPassword"
                         required
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        placeholder="Confirm your password"
-                        className="h-11 pr-10"
+                        placeholder="Confirm password"
                       />
-                      <Button
+
+                      <button
                         type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2"
+                        className="absolute right-3 top-3"
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
                       >
                         {showConfirmPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
+                          <EyeOff size={18} />
                         ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
+                          <Eye size={18} />
                         )}
-                      </Button>
+                      </button>
                     </div>
                   </div>
 
                   <Button
                     type="submit"
+                    className="w-full"
                     disabled={isLoading}
-                    className="h-11 w-full text-base"
                   >
-                    {isLoading ? "Creating Account..." : "Sign Up"}
+                    {isLoading ? "Creating..." : "Sign Up"}
                   </Button>
                 </form>
 
                 <div className="relative my-6">
                   <Separator />
-                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs uppercase text-muted-foreground">
+                  <span className="absolute left-1/2 top-1/2 bg-white px-2 text-xs -translate-x-1/2 -translate-y-1/2">
                     Student Registration
                   </span>
                 </div>
               </CardContent>
 
-              <CardFooter className="justify-center px-0 sm:justify-start">
-                <p className="text-sm text-muted-foreground">
+              <CardFooter className="px-0">
+                <p className="text-sm">
                   Already have an account?{" "}
-                  <Link href="/login" className="font-semibold text-primary">
+                  <Link href="/login" className="text-primary font-semibold">
                     Sign in
                   </Link>
                 </p>
